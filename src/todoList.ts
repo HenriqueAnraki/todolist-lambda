@@ -1,10 +1,14 @@
 import { Handler } from "aws-lambda";
 
+import { createConnection } from "typeorm";
+
 // type Handler<TEvent = any, TResult = any> = (
 //   event: TEvent,
 //   context: Context,
 //   callback: Callback<TResult>
 // ) => void | Promise<TResult>;
+
+createConnection();
 
 const createTaskHandler: Handler = async (event: any) => {
   const { title, desc } = JSON.parse(event.body);
