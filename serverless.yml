@@ -1,0 +1,47 @@
+service: aws-todo-list
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: us-east-1
+  httpApi:
+    cors: true
+
+functions:
+  createTask:
+    handler: src/todoList.createTaskHandler
+    events:
+      - httpApi:
+          path: /task
+          method: post
+  getTodoList:
+    handler: src/todoList.getTodoListHandler
+    events:
+      - httpApi:
+          path: /task
+          method: get
+  updateTask:
+    handler: src/todoList.updateTaskHandler
+    events:
+      - httpApi:
+          path: /task/{taskId}
+          method: patch
+  deleteTask:
+    handler: src/todoList.deleteTaskHandler
+    events:
+      - httpApi:
+          path: /task/{taskId}
+          method: delete
+  completeTask:
+    handler: src/todoList.completeTaskHandler
+    events:
+      - httpApi:
+          path: /task/complete/{taskId}
+          method: post
+
+plugins:
+  - serverless-webpack
+  - serverless-offline
+
+custom:
+  webpack:
+    includeModules: true
