@@ -1,6 +1,10 @@
 import { Handler } from "aws-lambda";
+import "reflect-metadata";
+import { createConnection, getRepository } from "typeorm";
 
-import { createConnection } from "typeorm";
+import { Task } from "./entity/Task";
+
+createConnection();
 
 // type Handler<TEvent = any, TResult = any> = (
 //   event: TEvent,
@@ -8,32 +12,30 @@ import { createConnection } from "typeorm";
 //   callback: Callback<TResult>
 // ) => void | Promise<TResult>;
 
-createConnection();
+export const createTaskHandler: Handler = async (event: any) => {
+  const task = JSON.parse(event.body);
 
-const createTaskHandler: Handler = async (event: any) => {
-  const { title, desc } = JSON.parse(event.body);
+  const fullTask = `${task.title} + ${task.desc}`;
 
-  const fullTask = `${title} + ${desc}`;
+  try {
+    const repo = getRepository(Task);
+    const res = await repo.save(task);
 
-  // const response = {
-  return {
-    statusCode: 201,
-    body: JSON.stringify(
-      {
-        message: fullTask,
-        input: event,
-      },
-      null,
-      2
-    ),
-  };
+    // const response = {
+    return {
+      statusCode: 201,
+      body: JSON.stringify(res, null, 2),
+    };
+  } catch (error) {
+    console.error(error);
+  }
 
   // return new Promise((resolve) => {
   //   resolve(response)
   // })
 };
 
-const getTodoListHandler: Handler = async (event: any) => {
+export const getTodoListHandler: Handler = async (event: any) => {
   return {
     statusCode: 200,
     body: JSON.stringify(
@@ -47,7 +49,7 @@ const getTodoListHandler: Handler = async (event: any) => {
   };
 };
 
-const updateTaskHandler: Handler = async (event: any) => {
+export const updateTaskHandler: Handler = async (event: any) => {
   return {
     statusCode: 200,
     body: JSON.stringify(
@@ -61,7 +63,7 @@ const updateTaskHandler: Handler = async (event: any) => {
   };
 };
 
-const deleteTaskHandler: Handler = async (event: any) => {
+export const deleteTaskHandler: Handler = async (event: any) => {
   return {
     statusCode: 200,
     body: JSON.stringify(
@@ -75,7 +77,7 @@ const deleteTaskHandler: Handler = async (event: any) => {
   };
 };
 
-const completeTaskHandler: Handler = async (event: any) => {
+export const completeTaskHandler: Handler = async (event: any) => {
   return {
     statusCode: 200,
     body: JSON.stringify(
@@ -89,10 +91,10 @@ const completeTaskHandler: Handler = async (event: any) => {
   };
 };
 
-module.exports = {
-  createTaskHandler,
-  getTodoListHandler,
-  updateTaskHandler,
-  deleteTaskHandler,
-  completeTaskHandler,
-};
+// module.exports = {
+//   createTaskHandler,
+//   getTodoListHandler,
+//   updateTaskHandler,
+//   deleteTaskHandler,
+//   completeTaskHandler,
+// };

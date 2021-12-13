@@ -40,9 +40,8 @@ functions:
 
 plugins:
   - serverless-dotenv-plugin
-  - serverless-webpack
+  - serverless-plugin-typescript
   - serverless-offline
-
-custom:
-  webpack:
-    includeModules: true
+# custom:
+#   webpack:
+#     includeModules: true
