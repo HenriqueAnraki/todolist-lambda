@@ -3,8 +3,20 @@ import "reflect-metadata";
 import { createConnection, getRepository } from "typeorm";
 
 import { Task } from "./entity/Task";
+import { envConnection } from "./environment";
 
-createConnection();
+createConnection({ ...envConnection, entities: [Task] });
+
+console.log(process.env.SECRET_MESSAGE);
+
+// createConnection({
+//   type: "mysql",
+//   host: "localhost",
+//   port: 3306,
+//   username: "test",
+//   password: "test",
+//   database: "test",
+// });
 
 // type Handler<TEvent = any, TResult = any> = (
 //   event: TEvent,
@@ -28,6 +40,7 @@ export const createTaskHandler: Handler = async (event: any) => {
     };
   } catch (error) {
     console.error(error);
+    return error;
   }
 
   // return new Promise((resolve) => {
